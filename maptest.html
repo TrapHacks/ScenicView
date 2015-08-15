@@ -43,7 +43,6 @@
 </div>
     <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?signed_in=true&libraries=places&callback=initMap" async defer></script>
-    <script src="https://maps.googleapis.com/maps/api/js?signed_in=true&libraries=places&callback=initMap" async defer></script>
 
 <script type="text/javascript">
 
@@ -52,24 +51,37 @@
         height: $(window).height(),
         width: $(window).width()
     });
-    var mapOptions = {
-        center: new google.maps.LatLng(36.4875, -4.9525),
-        zoom: 16,
-        mapTypeId: google.maps.MapTypeId.HYBRID,
-        mapTypeControl: false,
-        streetViewControl: false,
-        panControl: false,
-        zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM
-        }
-    };
-    var map = new google.maps.Map($("#map-canvas")[0],
-    mapOptions);
-    var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(36.4875, -4.9525),
-        map: map,
-        title: 'Hello World!'
-    });
+
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    
+    function onSuccess(position){
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+        var mapOptions = {
+            center: new google.maps.LatLng(latitude, longitude),
+            zoom: 16,
+            mapTypeId: google.maps.MapTypeId.HYBRID,
+            mapTypeControl: false,
+            streetViewControl: false,
+            panControl: false,
+            zoomControlOptions: {
+                position: google.maps.ControlPosition.RIGHT_BOTTOM
+            }
+        };
+        var map = new google.maps.Map($("#map-canvas")[0],
+        mapOptions);
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(latitude, longitude),
+            map: map,
+            title: 'Hello World!'
+        });
+    }
+
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
+    }
+    
     google.maps.event.addListenerOnce(map, 'idle', function (e) {
         $("#map-canvas").append($("<a href='#' data-role='button' data-rel='back' class='forMap'>Back</a>").hide().fadeIn(700));
         $(".forMap").buttonMarkup({
@@ -95,59 +107,3 @@
 </script>
 </body>
 </html>
-
-
-<!-- <!DOCTYPE html>
-<html>
-  <head>
-    <title>Device Properties Example</title>
-
-    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?signed_in=true&libraries=places&callback=initMap" async defer></script>
-    <script type="text/javascript" charset="utf-8">
-
-    // Wait for Cordova to load
-    //
-    document.addEventListener("deviceready", onDeviceReady, false);
-
-    var watchID = null;
-    var map;
-    // Cordova is ready
-    //
-    function onDeviceReady() {
-        watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError);
-    }
-
-    // onSuccess Geolocation
-    //
-    function onSuccess(position) {
-        // var element = document.getElementById('geolocation');
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
-        var pyrmont = {lat: latitude, lng: longitude};
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: pyrmont,
-            zoom: 15
-        });
-        // element.innerHTML = 'Latitude: '  + latitude
-        //                     + '<br />' +
-        //                     'Longitude: ' + longitude
-        //                        + '<br />' +
-        //                     '<hr />'      + element.innerHTML;
-
-    }
-
-    // onError Callback receives a PositionError object
-    //
-    function onError(error) {
-        alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
-    }
-
-    </script>
-  </head>
-  <body>
-    <div id="map"></div> 
-    <!-- <p id="geolocation">Grabbing geolocation...</p>
-  </body>
-</html> --> -->
