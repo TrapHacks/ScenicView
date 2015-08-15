@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>Place searches</title>
+		<title>Scenic View</title>
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 		<meta charset="utf-8">
 
@@ -63,11 +63,11 @@
 					height: $(window).height(),
 					width: $(window).width()
 				});
-			navigator.geolocation.getCurrentPosition(onSuccess, onError);
+			navigator.geolocation.getCurrentPosition(geoLocateOnSuccess, geoLocateOnError);
 			
-			function onSuccess(position){
-					var latitude = position.coords.latitude;
-					var longitude = position.coords.longitude;
+			function buildMap(latitude, longitude)
+			{
+					//Making the Google Map
 					var mapOptions = {
 							center: new google.maps.LatLng(latitude, longitude),
 							zoom: 16,
@@ -89,7 +89,13 @@
 							title: 'Hello World!'
 					});
 			}
-			function onError(error) {
+			function geoLocateOnSuccess(position)
+			{
+					var latitude = position.coords.latitude;
+					var longitude = position.coords.longitude;
+					buildMap(latitude, longitude)
+			}
+			function geoLocateOnError(error) {
 				alert('code: ' + error.code+ '\n' + 'message: ' + error.message + '\n');
 			}
 			
