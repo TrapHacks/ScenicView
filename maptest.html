@@ -1,109 +1,120 @@
-
 <html>
-  <head>
-    <title>Place searches</title>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
+	<head>
+		<title>Place searches</title>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+		<meta charset="utf-8">
 
-  <link rel="stylesheet" href="css/themes/GreenTheme.min.css" />
-  <link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
-  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" /> 
-  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script> 
-  <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script> 
-<style type="text/css">
-    
-    #map-canvas {
-    width: 100%;
-    height: 100%;
-}
-.ui-content {
-    padding: 0;
-}
-.forMap {
-    position: absolute;
-    top:0;
-    left:0;
-}   
-</style>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="css/themes/GreenTheme.min.css" />
+		<link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" /> 
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script> 
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script> 
+		<style type="text/css">
+		
+				#map-canvas {
+				width: 100%;
+				height: 100%;
+		}
+		.ui-content {
+				padding: 0;
+		}
+		.forMap {
+				position: absolute;
+				top:0;
+				left:0;
+		}	 
+		</style>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
 
-</head>
-<body>
-<div data-role="page" data-theme="a" id="main">
-    <div data-role="header">
-            <h1>Home</h1>
+	<body>
+	    <div data-role="page" data-theme="a" id="main">
+			<div data-role="header">
+				<h1>Home</h1>
+			</div>
+			<div align = "center">
+				<a href="#map" data-role="button" data-theme="d" data-corners="false" data-inline="true">Show Map</a>
+			</div>
+	    </div>
+		<div id="map" data-role="page" data-theme="a">
+			<div data-role="content">
+				<div id="map-canvas"></div>
+			</div>
+		</div>
+		<div id="suggested" data-role="page" data-theme="a">
+			<div data-role="content">
+				Test
+			</div>
+		</div>
 
-    </div> <a href="#map" data-role="button" data-theme="d" data-corners="false" data-inline="true">Show Map</a>
+		<div id="splash" data-role="page" data-theme="a">
+			<div data-role="content">
+				Test2
+			</div>
+		</div>
 
-</div>
-<div id="map" data-role="page" data-theme="a">
-    <div data-role="content">
-        <div id="map-canvas"></div>
-    </div>
-</div>
-    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?signed_in=true&libraries=places&callback=initMap" async defer></script>
 
-<script type="text/javascript">
+		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?signed_in=true&libraries=places&callback=initMap" async defer></script>
 
-    $(document).one("pageshow", "#map", function () {
-    $(".ui-content", this).css({
-        height: $(window).height(),
-        width: $(window).width()
-    });
+		<script type="text/javascript">
+			$(document).on("pageshow", "#map", function () {
+				$(".ui-content", this).css({
+					height: $(window).height(),
+					width: $(window).width()
+				});
+			navigator.geolocation.getCurrentPosition(onSuccess, onError);
+			
+			function onSuccess(position){
+					var latitude = position.coords.latitude;
+					var longitude = position.coords.longitude;
+					var mapOptions = {
+							center: new google.maps.LatLng(latitude, longitude),
+							zoom: 16,
+							mapTypeId: google.maps.MapTypeId.HYBRID,
+							mapTypeControl: false,
+							streetViewControl: false,
+							panControl: false,
+							zoomControlOptions: {
+									position: google.maps.ControlPosition.RIGHT_BOTTOM
+							}
+					};
+					var map = new google.maps.Map($("#map-canvas")[0],
+					mapOptions);
+					map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
 
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
-    
-    function onSuccess(position){
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
-        var mapOptions = {
-            center: new google.maps.LatLng(latitude, longitude),
-            zoom: 16,
-            mapTypeId: google.maps.MapTypeId.HYBRID,
-            mapTypeControl: false,
-            streetViewControl: false,
-            panControl: false,
-            zoomControlOptions: {
-                position: google.maps.ControlPosition.RIGHT_BOTTOM
-            }
-        };
-        var map = new google.maps.Map($("#map-canvas")[0],
-        mapOptions);
-        var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(latitude, longitude),
-            map: map,
-            title: 'Hello World!'
-        });
-    }
+					var marker = new google.maps.Marker({
+							position: new google.maps.LatLng(latitude, longitude),
+							map: map,
+							title: 'Hello World!'
+					});
+			}
+			function onError(error) {
+				alert('code: ' + error.code+ '\n' + 'message: ' + error.message + '\n');
+			}
+			
+			google.maps.event.addListenerOnce(map, 'idle', function (e) {
+				$("#map-canvas").append($("<a href='#' data-role='button' data-rel='back' class='forMap'>Back</a>").hide().fadeIn(700));
+				$(".forMap").buttonMarkup({
+					mini: true,
+					inline: true,
+					theme: "e",
+					iconpos: "notext",
+					icon:"home"
+				});
+			});
+			google.maps.event.addListener(map, 'dragstart', function (e) {
+				$(".forMap").animate({
+						"opacity": 0.3
+				}, 300);
+			});
 
-    function onError(error) {
-        alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
-    }
-    
-    google.maps.event.addListenerOnce(map, 'idle', function (e) {
-        $("#map-canvas").append($("<a href='#' data-role='button' data-rel='back' class='forMap'>Back</a>").hide().fadeIn(700));
-        $(".forMap").buttonMarkup({
-            mini: true,
-            inline: true,
-            theme: "e",
-            iconpos: "notext",
-            icon:"home"
-        });
-    });
-    google.maps.event.addListener(map, 'dragstart', function (e) {
-        $(".forMap").animate({
-            "opacity": 0.3
-        }, 300);
-    });
-
-    google.maps.event.addListener(map, 'dragend', function (e) {
-        $(".forMap").animate({
-            "opacity": 1
-        }, 700);
-    });
-});
-</script>
-</body>
+			google.maps.event.addListener(map, 'dragend', function (e) {
+				$(".forMap").animate({
+					"opacity": 1
+				}, 700);
+			});
+		});
+		</script>
+	</body>
 </html>
