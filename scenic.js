@@ -1,18 +1,58 @@
-var centerX;
-var centerY;
+var centerlat;
+var centerlong;
 var radius;
-var startX;
-var startY;
-var endX;
-var endY;
+var startlat;
+var startlng;
+var endlng = 0;
+var endlat = 0;
+navigator.geolocation.getCurrentPosition(geoLocateOnSuccess, geoLocateOnError);
+
+
+function geoLocateOnSuccess(position)
+{
+		startlat = position.coords.latitude;
+		startlng = position.coords.longitude;
+}
+function geoLocateOnError(error)
+{
+	startlat = 0;
+	startlng = 0;
+	//alert('code: ' + error.code+ '\n' + 'message: ' + error.message + '\n');
+}
+function computeCenterAndRadius()
+{
+	centerlat = (startlat + endlat)/2;
+	centerlng = (startlng + endlng)/2;
+	radius = getDistance({lat:startlat, lng:startlng}, {lat:endlat, lng: endlng})/2
+}
+
+var rad = function(x) {
+  return x * Math.PI / 180;
+};
+
+var getDistance = function(p1, p2) {
+  var R = 6378137; // Earth’s mean radius in meter
+  var dLat = rad(p2.lat - p1.lat);
+  var dLong = rad(p2.lng - p1.lng);
+  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(rad(p1.lat)) * Math.cos(rad(p2.lat)) *
+    Math.sin(dLong / 2) * Math.sin(dLong / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c;
+  return d; // returns the distance in meter
+};
+
+
+
 $(document).on("pageshow", "#map", function ()
 {
 	$(".ui-content", this).css({
 		height: $(window).height(),
 		width: $(window).width()
 	});
+	computeCenterAndRadius()
+	buildMap(centerlat,centerlng)
 	var map;
-	navigator.geolocation.getCurrentPosition(geoLocateOnSuccess, geoLocateOnError);
 	function buildMap(latitude, longitude)
 	{
 			//Making the Google Map
@@ -31,17 +71,30 @@ $(document).on("pageshow", "#map", function ()
 			mapOptions);
 			map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
 
+
+			var marker = new google.maps.Marker({
+					position: new google.maps.LatLng(endlat, endlng),
+					map: map,
+					title: 'Destination'
+			});
+			/* Centroid 
 			var marker = new google.maps.Marker({
 					position: new google.maps.LatLng(latitude, longitude),
 					map: map,
 					title: 'Hello World!'
+			});
+			*/
+			var marker = new google.maps.Marker({
+					position: new google.maps.LatLng(startlat, startlng),
+					map: map,
+					title: 'Origin'
 			});
 
 
 			var service = new google.maps.places.PlacesService(map);
 			service.nearbySearch({
 				location: {lat: latitude, lng: longitude},
-				radius: 1500,
+				radius: radius,
 				types: ['hindu_temple', 'park', 'mosque', 'synagogue', 
 				'university']
 			}, onServiceSuccess);
@@ -71,18 +124,6 @@ $(document).on("pageshow", "#map", function ()
 		infowindow.open(map, this);
 	  });
 	}
-
-	function geoLocateOnSuccess(position)
-	{
-			var latitude = position.coords.latitude;
-			var longitude = position.coords.longitude;
-			buildMap(latitude, longitude)
-	}
-	function geoLocateOnError(error)
-	{
-		alert('code: ' + error.code+ '\n' + 'message: ' + error.message + '\n');
-	}
-	
 	google.maps.event.addListenerOnce(map, 'idle', function (e)
 	{
 		$("#map-canvas").append($("<a href='#' data-role='button' data-rel='back' class='forMap'>Back</a>").hide().fadeIn(700));
@@ -142,20 +183,14 @@ function initAutocomplete() {
 function fillInAddressOrigin() {
   // Get the place details from the autocomplete object.
   var place = autocompleteOrigin.getPlace();
-  var placeLat = place.geometry.location.lat();
-  var placeLng = place.geometry.location.lng();
-  console.log(placeLat);
-  console.log(placeLng);
-
+  startlat = place.geometry.location.lat();
+  startlng = place.geometry.location.lng();
 }
 
 function fillInAddressDestination() {
   // Get the place details from the autocomplete object.
   var place = autocompleteDestination.getPlace();
-  var placeLat = place.geometry.location.lat();
-  var placeLng = place.geometry.location.lng();
-  console.log(placeLat);
-  console.log(placeLng);
-
+  endlat = place.geometry.location.lat();
+  endlng = place.geometry.location.lng();
 }
 
