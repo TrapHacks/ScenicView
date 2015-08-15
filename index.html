@@ -24,6 +24,46 @@
 					left:0;
 			}	
 		</style>
+        <style>
+          #destinationField, #controls {
+            position: relative;
+            width: 480px;
+          }
+          #autocomplete {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 99%;
+          }
+          .label {
+            text-align: right;
+            font-weight: bold;
+            width: 100px;
+            color: #303030;
+          }
+          #address {
+            border: 1px solid #000090;
+            background-color: #f0f0ff;
+            width: 480px;
+            padding-right: 2px;
+          }
+          #address td {
+            font-size: 10pt;
+          }
+          .field {
+            width: 99%;
+          }
+          .slimField {
+            width: 80px;
+          }
+          .wideField {
+            width: 200px;
+          }
+          #destinationField {
+            height: 20px;
+            margin-bottom: 2px;
+          }
+        </style>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 
@@ -34,14 +74,13 @@
 			</div>
 			<div align = "center">
 				<br>
-				<div id="originField">
-					<input id="autocompleteOrigin" placeholder="Enter your address" type="text"></input>
-				</div>
-				<br>
-				<div id="destinationField">
-					<input id="autocompleteDestination" placeholder="Enter your address" type="text"></input>
-				</div>
-				<label for="flip-mini">Automatic Routing:</label>
+			    <div id="originField">
+                  <input id="autocompleteOrigin" placeholder="Enter your origin address" type="text"></input>
+                </div>
+                <div id="destinationField">
+                  <input id="autocompleteDestination" placeholder="Enter your destination address" type="text"></input>
+                </div>	
+    			<label for="flip-mini">Automatic Routing:</label>
 				<select name="flip-mini" id="flip-mini" data-role="slider" data-mini="true">
 					<option value="off">Off</option>
 					<option value="on">On</option>
@@ -70,8 +109,8 @@
 		<!-- Scripts -->
 		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 		<script src="scenic.js"></script>
-		<script src="https://maps.googleapis.com/maps/api/js?signed_in=true&libraries=places&callback=initMap" async defer></script>
-
+        <script src="https://maps.googleapis.com/maps/api/js?signed_in=true&libraries=places&callback=initAutocomplete"
+        async defer></script>
 	</body>
 
 </html>

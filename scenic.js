@@ -108,3 +108,54 @@ $(document).on("pageshow", "#map", function ()
 		}, 700);
 	});
 });
+
+
+var placeSearch, autocompleteDestination, autocompleteOrigin;
+var componentForm = {
+  street_number: 'short_name',
+  route: 'long_name',
+  locality: 'long_name',
+  administrative_area_level_1: 'short_name',
+  country: 'long_name',
+  postal_code: 'short_name'
+};
+
+function initAutocomplete() {
+  // Create the autocomplete object, restricting the search to geographical
+  // location types.
+
+  autocompleteOrigin = new google.maps.places.Autocomplete(
+      /** @type {!HTMLInputElement} */(document.getElementById('autocompleteOrigin')),
+      {types: ['geocode']}); 
+  autocompleteOrigin.addListener('place_changed',
+    fillInAddressOrigin)
+  autocompleteDestination = new google.maps.places.Autocomplete(
+      /** @type {!HTMLInputElement} */(document.getElementById('autocompleteDestination')),
+      {types: ['geocode']});
+
+  // When the user selects an address from the dropdown, populate the address
+  // fields in the form.
+  autocompleteDestination.addListener('place_changed', fillInAddressDestination);
+}
+
+// [START region_fillform]
+function fillInAddressOrigin() {
+  // Get the place details from the autocomplete object.
+  var place = autocompleteOrigin.getPlace();
+  var placeLat = place.geometry.location.lat();
+  var placeLng = place.geometry.location.lng();
+  console.log(placeLat);
+  console.log(placeLng);
+
+}
+
+function fillInAddressDestination() {
+  // Get the place details from the autocomplete object.
+  var place = autocompleteDestination.getPlace();
+  var placeLat = place.geometry.location.lat();
+  var placeLng = place.geometry.location.lng();
+  console.log(placeLat);
+  console.log(placeLng);
+
+}
+
