@@ -69,7 +69,7 @@ $(document).on("pageshow", "#map", function ()
 			};
 			map = new google.maps.Map($("#map-canvas")[0],
 			mapOptions);
-			map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+			map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
 
 
 			var marker = new google.maps.Marker({
@@ -77,6 +77,7 @@ $(document).on("pageshow", "#map", function ()
 					map: map,
 					title: 'Destination'
 			});
+
 			/* Centroid 
 			var marker = new google.maps.Marker({
 					position: new google.maps.LatLng(latitude, longitude),
@@ -100,14 +101,24 @@ $(document).on("pageshow", "#map", function ()
 			}, onServiceSuccess);
 	}
 
+	/*
+		list of places !!
+	*/
 	function onServiceSuccess(results, status)
 	{
 		if (status === google.maps.places.PlacesServiceStatus.OK)
 		{
-			for (var i = 0; i < results.length; i++)
-			{
-				createMarker(results[i]);
-			};
+			if(true){
+				for (var i = 0; i < results.length; i++)
+				{
+					createMarker(results[i]);
+				};
+
+				buildUrl(results);
+			}
+
+
+
 		}
 	}
 
@@ -192,5 +203,16 @@ function fillInAddressDestination() {
   var place = autocompleteDestination.getPlace();
   endlat = place.geometry.location.lat();
   endlng = place.geometry.location.lng();
+}
+
+function buildUrl(places){
+	//Build the url to send back to client 
+	var baseUrl = 'www.google.com/maps/dir';
+	for (var i = 0; i < places.length; i++) {
+		baseUrl += '/' + places[i].name.split(' ').join('+') ;
+	};
+
+	console.log(baseUrl);
+	return baseUrl;
 }
 
