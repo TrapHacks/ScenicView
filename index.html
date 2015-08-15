@@ -10,19 +10,19 @@
 		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script> 
 		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script> 
 		<style type="text/css">
-		
-				#map-canvas {
-				width: 100%;
-				height: 100%;
-		}
-		.ui-content {
-				padding: 0;
-		}
-		.forMap {
-				position: absolute;
-				top:0;
-				left:0;
-		}	
+			#map-canvas
+			{
+					width: 100%;
+					height: 100%;
+			}
+			.ui-content {
+					padding: 0;
+			}
+			.forMap {
+					position: absolute;
+					top:0;
+					left:0;
+			}	
 		</style>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
@@ -33,6 +33,20 @@
 				<h1>Home</h1>
 			</div>
 			<div align = "center">
+				<br>
+				<div id="originField">
+					<input id="autocompleteOrigin" placeholder="Enter your address" type="text"></input>
+				</div>
+				<br>
+				<div id="destinationField">
+					<input id="autocompleteDestination" placeholder="Enter your address" type="text"></input>
+				</div>
+				<label for="flip-mini">Automatic Routing:</label>
+				<select name="flip-mini" id="flip-mini" data-role="slider" data-mini="true">
+					<option value="off">Off</option>
+					<option value="on">On</option>
+				</select>
+                <br>
 				<a href="#map" data-role="button" data-theme="d" data-corners="false" data-inline="true">Show Map</a>
 			</div>
 		</div>
@@ -53,9 +67,8 @@
 			</div>
 		</div>
 
-
+		<!-- Scripts -->
 		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-
 		<script src="scenic.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?signed_in=true&libraries=places&callback=initMap" async defer></script>
 
