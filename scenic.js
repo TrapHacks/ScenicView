@@ -59,7 +59,7 @@ $(document).on("pageshow", "#map", function ()
 			var mapOptions = {
 					center: new google.maps.LatLng(latitude, longitude),
 					zoom: 16,
-					mapTypeId: google.maps.MapTypeId.HYBRID,
+					mapTypeId: google.maps.MapTypeId.ROADMAP,
 					mapTypeControl: false,
 					streetViewControl: false,
 					panControl: false,
@@ -69,7 +69,6 @@ $(document).on("pageshow", "#map", function ()
 			};
 			map = new google.maps.Map($("#map-canvas")[0],
 			mapOptions);
-			map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
 
 
 			var marker = new google.maps.Marker({
@@ -85,6 +84,7 @@ $(document).on("pageshow", "#map", function ()
 					title: 'Hello World!'
 			});
 			*/
+
 			var marker = new google.maps.Marker({
 					position: new google.maps.LatLng(startlat, startlng),
 					map: map,
@@ -108,16 +108,30 @@ $(document).on("pageshow", "#map", function ()
 	{
 		if (status === google.maps.places.PlacesServiceStatus.OK)
 		{
-			if(true){
+			if(document.getElementById('flip-mini').value == 'on'){
+
 				for (var i = 0; i < results.length; i++)
 				{
 					createMarker(results[i]);
 				};
+					google.maps.event.addListenerOnce(map, 'idle', function (e)
+					{
+						$("#map-canvas").append($("<a href='#' data-role='button' data-rel='back' class='forMap'>Back</a>").hide().fadeIn(700));
+						$(".forMap").buttonMarkup({
+							mini: true,
+							inline: true,
+							theme: "e",
+							iconpos: "notext",
+							icon:"home"
+						});
 
-				buildUrl(results);
+
+					});
+
+				console.log(document.getElementById('xLink'));
+
+				document.getElementById('xLink').href = buildUrl(results, document.getElementById('autocompleteOrigin').value, document.getElementById('autocompleteDestination').value);
 			}
-
-
 
 		}
 	}
@@ -135,17 +149,7 @@ $(document).on("pageshow", "#map", function ()
 		infowindow.open(map, this);
 	  });
 	}
-	google.maps.event.addListenerOnce(map, 'idle', function (e)
-	{
-		$("#map-canvas").append($("<a href='#' data-role='button' data-rel='back' class='forMap'>Back</a>").hide().fadeIn(700));
-		$(".forMap").buttonMarkup({
-			mini: true,
-			inline: true,
-			theme: "e",
-			iconpos: "notext",
-			icon:"home"
-		});
-	});
+
 	google.maps.event.addListener(map, 'dragstart', function (e)
 	{
 		$(".forMap").animate({
@@ -205,14 +209,14 @@ function fillInAddressDestination() {
   endlng = place.geometry.location.lng();
 }
 
-function buildUrl(places){
+function buildUrl(places, origin, destination){
 	//Build the url to send back to client 
-	var baseUrl = 'www.google.com/maps/dir';
-	for (var i = 0; i < places.length; i++) {
+	var baseUrl = 'https://www.google.com/maps/dir';
+	baseUrl += '/' + origin.split(' ').join('+');
+	for (var i = 0; i < 10; i++) {
 		baseUrl += '/' + places[i].name.split(' ').join('+') ;
 	};
-
-	console.log(baseUrl);
+	baseUrl += '/' + destination.split(' ').join('+');
 	return baseUrl;
 }
 
