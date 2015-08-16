@@ -63,7 +63,6 @@ $(document).on("pageshow", "#map", function ()
 			//Making the Google Map
 			var mapOptions = {
 					center: new google.maps.LatLng(latitude, longitude),
-					zoom: 16,
 					mapTypeId: google.maps.MapTypeId.ROADMAP,
 					mapTypeControl: false,
 					streetViewControl: false,
@@ -74,6 +73,15 @@ $(document).on("pageshow", "#map", function ()
 			};
 			map = new google.maps.Map($("#map-canvas")[0],
 			mapOptions);
+
+
+			var latLngList = new Array(new google.maps.LatLng(startlat, startlng), new google.maps.LatLng(endlat, endlng));
+			var bounds = new google.maps.LatLngBounds();
+			for (var i = 0; i < latLngList.length; i++) {
+				bounds.extend(latLngList[i]);
+			};
+
+			map.fitBounds(bounds);
 
 
 			var marker = new google.maps.Marker({
@@ -212,14 +220,17 @@ function fillInAddressDestination() {
   var place = autocompleteDestination.getPlace();
   endlat = place.geometry.location.lat();
   endlng = place.geometry.location.lng();
+
 }
 
+
 function buildUrl(places, origin, destination){
-	//Build the url to send back to client 
+	//Build the url to send back to client
 	var baseUrl = 'https://www.google.com/maps/dir';
 	baseUrl += '/' + origin.split(' ').join('+');
 	for (var i = 0; i < 10; i++) {
 		baseUrl += '/' + places[i].name.split(' ').join('+') ;
+		console.log(places[i].name);
 	};
 	baseUrl += '/' + destination.split(' ').join('+');
 	return baseUrl;
