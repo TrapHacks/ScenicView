@@ -242,12 +242,13 @@ function fillInAddressDestination() {
 function buildUrl(places, origin, destination){
 	//Build the url to send back to client
 	var baseUrl = 'https://www.google.com/maps/dir';
-	baseUrl += '/' + origin.split(' ').join('+');
+	baseUrl += '/' + startlat + ',' + startlng;
 	for (var i = 0; i < 10; i++) {
 		baseUrl += '/' + places[i].name.split(' ').join('+') ;
 		console.log(places[i].name);
 	};
 	baseUrl += '/' + destination.split(' ').join('+');
+	console.log(baseUrl);
 	return baseUrl;
 }
 
