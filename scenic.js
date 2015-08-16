@@ -1,17 +1,22 @@
 var centerlat;
 var centerlong;
 var radius;
-var startlat;
-var startlng;
+var startlat=0;
+var startlng=0;
 var endlng = 0;
 var endlat = 0;
-navigator.geolocation.getCurrentPosition(geoLocateOnSuccess, geoLocateOnError);
 
 
+function geoLocate()
+{
+	navigator.geolocation.getCurrentPosition(geoLocateOnSuccess, geoLocateOnError);
+
+}
 function geoLocateOnSuccess(position)
 {
 		startlat = position.coords.latitude;
 		startlng = position.coords.longitude;
+		document.getElementById('autocompleteOrigin').value='Current Location'
 }
 function geoLocateOnError(error)
 {
