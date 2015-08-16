@@ -165,7 +165,13 @@ $(document).on("pageshow", "#map", function ()
 
 					});
 
-				_results = results;
+				_results = results.sort(function(a, b){
+					var keyA = a.geometry.location.lat();
+					var keyB = b.geometry.location.lat();
+			    if(keyA < keyB) return -1;
+					if(keyA > keyB) return 1;
+					return 0;
+				});
 				// console.log(document.getElementById('xLink'));
 
 				// document.getElementById('xLink').href = buildUrl(results, document.getElementById('autocompleteOrigin').value, document.getElementById('autocompleteDestination').value);
