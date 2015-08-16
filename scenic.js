@@ -12,18 +12,21 @@ function geoLocate()
 	navigator.geolocation.getCurrentPosition(geoLocateOnSuccess, geoLocateOnError);
 
 }
+
 function geoLocateOnSuccess(position)
 {
 		startlat = position.coords.latitude;
 		startlng = position.coords.longitude;
 		document.getElementById('autocompleteOrigin').value='Current Location'
 }
+
 function geoLocateOnError(error)
 {
 	startlat = 0;
 	startlng = 0;
 	//alert('code: ' + error.code+ '\n' + 'message: ' + error.message + '\n');
 }
+
 function computeCenterAndRadius()
 {
 	centerlat = (startlat + endlat)/2;
@@ -48,16 +51,16 @@ var getDistance = function(p1, p2) {
 };
 
 
-	function pinSymbol(color) {
-		return {
-			path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z M -2,-30 a 2,2 0 1,1 4,0 2,2 0 1,1 -4,0',
-			fillColor: color,
-			fillOpacity: 1,
-			strokeColor: '#000',
-			strokeWeight: 2,
-			scale: 1,
-	 };
-	}
+function pinSymbol(color) {
+	return {
+		path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z M -2,-30 a 2,2 0 1,1 4,0 2,2 0 1,1 -4,0',
+		fillColor: color,
+		fillOpacity: 1,
+		strokeColor: '#000',
+		strokeWeight: 2,
+		scale: 1,
+ };
+}
 
 
 $(document).on("pageshow", "#map", function ()
@@ -69,68 +72,73 @@ $(document).on("pageshow", "#map", function ()
 	computeCenterAndRadius()
 	buildMap(centerlat,centerlng)
 	var map;
+	var infowindow;
 	function buildMap(latitude, longitude)
 	{
-			//Making the Google Map
-			var mapOptions = {
-					center: new google.maps.LatLng(latitude, longitude),
-					mapTypeId: google.maps.MapTypeId.ROADMAP,
-					mapTypeControl: false,
-					streetViewControl: false,
-					panControl: false,
-					zoomControlOptions: {
-							position: google.maps.ControlPosition.RIGHT_BOTTOM
-					}
-			};
-			map = new google.maps.Map($("#map-canvas")[0],
-			mapOptions);
+
+		infowindow = new google.maps.InfoWindow(
+	  { 
+	    size: new google.maps.Size(150,50)
+	  });
+		//Making the Google Map
+		var mapOptions = {
+				center: new google.maps.LatLng(latitude, longitude),
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				mapTypeControl: false,
+				streetViewControl: false,
+				panControl: false,
+				zoomControlOptions: {
+						position: google.maps.ControlPosition.RIGHT_BOTTOM
+				}
+		};
+
+		map = new google.maps.Map($("#map-canvas")[0],
+		mapOptions);
 
 
-			var latLngList = new Array(new google.maps.LatLng(startlat, startlng), new google.maps.LatLng(endlat, endlng));
-			var bounds = new google.maps.LatLngBounds();
-			for (var i = 0; i < latLngList.length; i++) {
-				bounds.extend(latLngList[i]);
-			};
+		var latLngList = new Array(new google.maps.LatLng(startlat, startlng), new google.maps.LatLng(endlat, endlng));
+		var bounds = new google.maps.LatLngBounds();
+		for (var i = 0; i < latLngList.length; i++) {
+			bounds.extend(latLngList[i]);
+		};
 
-			map.fitBounds(bounds);
-
-
-			var marker = new google.maps.Marker({
-					position: new google.maps.LatLng(endlat, endlng),
-					map: map,
-					title: 'Destination',
-					icon: pinSymbol('#D5691C')
-			});
-
-			/* Centroid 
-			var marker = new google.maps.Marker({
-					position: new google.maps.LatLng(latitude, longitude),
-					map: map,
-					title: 'Hello World!'
-			});
-			*/
-
-			var marker = new google.maps.Marker({
-					position: new google.maps.LatLng(startlat, startlng),
-					map: map,
-					title: 'Origin',
-					icon: pinSymbol('#321CD5')
-
-			});
+		map.fitBounds(bounds);
 
 
-			var service = new google.maps.places.PlacesService(map);
-			service.nearbySearch({
-				location: {lat: latitude, lng: longitude},
-				radius: radius,
-				types: ['hindu_temple', 'park', 'mosque', 'synagogue', 
-				'university']
-			}, onServiceSuccess);
+		var marker = new google.maps.Marker({
+				position: new google.maps.LatLng(endlat, endlng),
+				map: map,
+				title: 'Destination',
+				icon: pinSymbol('#D5691C')
+		});
+
+		/* Centroid 
+		var marker = new google.maps.Marker({
+				position: new google.maps.LatLng(latitude, longitude),
+				map: map,
+				title: 'Hello World!'
+		});
+		*/
+
+		var marker = new google.maps.Marker({
+				position: new google.maps.LatLng(startlat, startlng),
+				map: map,
+				title: 'Origin',
+				icon: pinSymbol('#321CD5')
+
+		});
+
+
+		var service = new google.maps.places.PlacesService(map);
+		service.nearbySearch({
+			location: {lat: latitude, lng: longitude},
+			radius: radius,
+			types: ['hindu_temple', 'park', 'mosque', 'synagogue', 
+			'university']
+		}, onServiceSuccess);
 	}
 
-	/*
-		list of places !!
-	*/
+
 	function onServiceSuccess(results, status)
 	{
 		if (status === google.maps.places.PlacesServiceStatus.OK)
@@ -173,8 +181,8 @@ $(document).on("pageshow", "#map", function ()
 		});
 
 		google.maps.event.addListener(marker, 'click', function() {
-		infowindow.setContent(place.name);
-		infowindow.open(map, this);
+			infowindow.setContent(place.name);
+			infowindow.open(map, this);
 		});
 	}
 
@@ -248,7 +256,6 @@ function buildUrl(places, origin, destination){
 		console.log(places[i].name);
 	};
 	baseUrl += '/' + destination.split(' ').join('+');
-	console.log(baseUrl);
 	return baseUrl;
 }
 
