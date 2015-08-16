@@ -5,7 +5,8 @@ var startlat=0;
 var startlng=0;
 var endlng = 0;
 var endlat = 0;
-
+var boolaray = [];
+var opened = [];
 
 function geoLocate()
 {
@@ -88,7 +89,7 @@ $(document).on("pageshow", "#map", function ()
 				streetViewControl: false,
 				panControl: false,
 				zoomControlOptions: {
-						position: google.maps.ControlPosition.RIGHT_BOTTOM
+					position: google.maps.ControlPosition.RIGHT_BOTTOM
 				}
 		};
 
@@ -147,7 +148,7 @@ $(document).on("pageshow", "#map", function ()
 
 				for (var i = 0; i < results.length; i++)
 				{
-					createMarker(results[i]);
+					createMarker(results[i],i);
 				};
 					google.maps.event.addListenerOnce(map, 'idle', function (e)
 					{
@@ -171,7 +172,7 @@ $(document).on("pageshow", "#map", function ()
 		}
 	}
 
-	function createMarker(place) {
+	function createMarker(place, i) {
 		console.log('from createMarker');
 		var placeLoc = place.geometry.location;
 		var marker = new google.maps.Marker({
@@ -180,9 +181,20 @@ $(document).on("pageshow", "#map", function ()
 		icon: pinSymbol('#0C8428')
 		});
 
+
+		boolaray[i] = true
+		opened[i] = false
 		google.maps.event.addListener(marker, 'click', function() {
-			infowindow.setContent(place.name);
-			infowindow.open(map, this);
+			if(opened)
+			{
+				boolaray = !boolaray;
+			}
+			else
+			{
+				opened = true
+				infowindow.setContent(place.name);
+				infowindow.open(map, this);
+			}
 		});
 	}
 
@@ -252,8 +264,11 @@ function buildUrl(places, origin, destination){
 	var baseUrl = 'https://www.google.com/maps/dir';
 	baseUrl += '/' + startlat + ',' + startlng;
 	for (var i = 0; i < 10; i++) {
-		baseUrl += '/' + places[i].name.split(' ').join('+') ;
-		console.log(places[i].name);
+		if(boolaray[i])
+		{
+			baseUrl += '/' + places[i].name.split(' ').join('+') ;
+			console.log(places[i].name);
+		}
 	};
 	baseUrl += '/' + destination.split(' ').join('+');
 	return baseUrl;
