@@ -335,11 +335,13 @@ function buildUrl(places, origin, destination){
 	baseUrl += '/' + startlat + ',' + startlng;
 	for (var i = 0; i < places.length; i++) {
 		if (boolaray[i]){
-			baseUrl += '/' + places[i].name.split(' ').join('+') ;
-			console.log(places[i].name);
+			// baseUrl += '/' + places[i].name.split(' ').join('+') ;
+			// console.log(places[i].name);
+			baseUrl += '/' + places[i].geometry.location.lat() + ',' + places[i].geometry.location.lng();
+
 		}
 	}
-	baseUrl += '/' + destination.split(' ').join('+');
+	baseUrl += '/' + endlat + ',' +endlng;
 	_results = null;
 	window.location.replace(baseUrl);
 }
