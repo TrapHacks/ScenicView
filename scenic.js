@@ -32,21 +32,32 @@ function computeCenterAndRadius()
 }
 
 var rad = function(x) {
-  return x * Math.PI / 180;
+	return x * Math.PI / 180;
 };
 
 var getDistance = function(p1, p2) {
-  var R = 6378137; // Earth’s mean radius in meter
-  var dLat = rad(p2.lat - p1.lat);
-  var dLong = rad(p2.lng - p1.lng);
-  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(rad(p1.lat)) * Math.cos(rad(p2.lat)) *
-    Math.sin(dLong / 2) * Math.sin(dLong / 2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  var d = R * c;
-  return d; // returns the distance in meter
+	var R = 6378137; // Earth’s mean radius in meter
+	var dLat = rad(p2.lat - p1.lat);
+	var dLong = rad(p2.lng - p1.lng);
+	var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+		Math.cos(rad(p1.lat)) * Math.cos(rad(p2.lat)) *
+		Math.sin(dLong / 2) * Math.sin(dLong / 2);
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	var d = R * c;
+	return d; // returns the distance in meter
 };
 
+
+	function pinSymbol(color) {
+		return {
+			path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z M -2,-30 a 2,2 0 1,1 4,0 2,2 0 1,1 -4,0',
+			fillColor: color,
+			fillOpacity: 1,
+			strokeColor: '#000',
+			strokeWeight: 2,
+			scale: 1,
+	 };
+	}
 
 
 $(document).on("pageshow", "#map", function ()
@@ -87,7 +98,8 @@ $(document).on("pageshow", "#map", function ()
 			var marker = new google.maps.Marker({
 					position: new google.maps.LatLng(endlat, endlng),
 					map: map,
-					title: 'Destination'
+					title: 'Destination',
+					icon: pinSymbol('#D5691C')
 			});
 
 			/* Centroid 
@@ -101,7 +113,9 @@ $(document).on("pageshow", "#map", function ()
 			var marker = new google.maps.Marker({
 					position: new google.maps.LatLng(startlat, startlng),
 					map: map,
-					title: 'Origin'
+					title: 'Origin',
+					icon: pinSymbol('#321CD5')
+
 			});
 
 
@@ -151,16 +165,17 @@ $(document).on("pageshow", "#map", function ()
 
 	function createMarker(place) {
 		console.log('from createMarker');
-	  var placeLoc = place.geometry.location;
-	  var marker = new google.maps.Marker({
+		var placeLoc = place.geometry.location;
+		var marker = new google.maps.Marker({
 		map: map,
-		position: place.geometry.location
-	  });
+		position: place.geometry.location,
+		icon: pinSymbol('#0C8428')
+		});
 
-	  google.maps.event.addListener(marker, 'click', function() {
+		google.maps.event.addListener(marker, 'click', function() {
 		infowindow.setContent(place.name);
 		infowindow.open(map, this);
-	  });
+		});
 	}
 
 	google.maps.event.addListener(map, 'dragstart', function (e)
@@ -181,45 +196,45 @@ $(document).on("pageshow", "#map", function ()
 
 var placeSearch, autocompleteDestination, autocompleteOrigin;
 var componentForm = {
-  street_number: 'short_name',
-  route: 'long_name',
-  locality: 'long_name',
-  administrative_area_level_1: 'short_name',
-  country: 'long_name',
-  postal_code: 'short_name'
+	street_number: 'short_name',
+	route: 'long_name',
+	locality: 'long_name',
+	administrative_area_level_1: 'short_name',
+	country: 'long_name',
+	postal_code: 'short_name'
 };
 
 function initAutocomplete() {
-  // Create the autocomplete object, restricting the search to geographical
-  // location types.
+	// Create the autocomplete object, restricting the search to geographical
+	// location types.
 
-  autocompleteOrigin = new google.maps.places.Autocomplete(
-      /** @type {!HTMLInputElement} */(document.getElementById('autocompleteOrigin')),
-      {types: ['geocode']}); 
-  autocompleteOrigin.addListener('place_changed',
-    fillInAddressOrigin)
-  autocompleteDestination = new google.maps.places.Autocomplete(
-      /** @type {!HTMLInputElement} */(document.getElementById('autocompleteDestination')),
-      {types: ['geocode']});
+	autocompleteOrigin = new google.maps.places.Autocomplete(
+			/** @type {!HTMLInputElement} */(document.getElementById('autocompleteOrigin')),
+			{types: ['geocode']}); 
+	autocompleteOrigin.addListener('place_changed',
+		fillInAddressOrigin)
+	autocompleteDestination = new google.maps.places.Autocomplete(
+			/** @type {!HTMLInputElement} */(document.getElementById('autocompleteDestination')),
+			{types: ['geocode']});
 
-  // When the user selects an address from the dropdown, populate the address
-  // fields in the form.
-  autocompleteDestination.addListener('place_changed', fillInAddressDestination);
+	// When the user selects an address from the dropdown, populate the address
+	// fields in the form.
+	autocompleteDestination.addListener('place_changed', fillInAddressDestination);
 }
 
 // [START region_fillform]
 function fillInAddressOrigin() {
-  // Get the place details from the autocomplete object.
-  var place = autocompleteOrigin.getPlace();
-  startlat = place.geometry.location.lat();
-  startlng = place.geometry.location.lng();
+	// Get the place details from the autocomplete object.
+	var place = autocompleteOrigin.getPlace();
+	startlat = place.geometry.location.lat();
+	startlng = place.geometry.location.lng();
 }
 
 function fillInAddressDestination() {
-  // Get the place details from the autocomplete object.
-  var place = autocompleteDestination.getPlace();
-  endlat = place.geometry.location.lat();
-  endlng = place.geometry.location.lng();
+	// Get the place details from the autocomplete object.
+	var place = autocompleteDestination.getPlace();
+	endlat = place.geometry.location.lat();
+	endlng = place.geometry.location.lng();
 
 }
 
