@@ -145,7 +145,7 @@ $(document).on("pageshow", "#map", function ()
 	{
 		if (status === google.maps.places.PlacesServiceStatus.OK)
 		{
-			if(document.getElementById('flip-mini').value == 'on'){
+			if(true){
 
 				for (var i = 0; i < results.length; i++)
 				{
