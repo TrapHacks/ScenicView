@@ -201,8 +201,11 @@ $(document).on("pageshow", "#map", function ()
 			}
 			else
 			{
-
+				for (var j = 0; j < opened.length; j++) {
+						opened[j] = false;
+				}
 				opened[i] = true
+
 				infowindow.setContent(place.name);
 				infowindow.open(map, this);
 			}
