@@ -7,6 +7,7 @@ var endlng = 0;
 var endlat = 0;
 var boolaray = [];
 var opened = [];
+var _results;
 
 function geoLocate()
 {
@@ -164,9 +165,10 @@ $(document).on("pageshow", "#map", function ()
 
 					});
 
-				console.log(document.getElementById('xLink'));
+				_results = results;
+				// console.log(document.getElementById('xLink'));
 
-				document.getElementById('xLink').href = buildUrl(results, document.getElementById('autocompleteOrigin').value, document.getElementById('autocompleteDestination').value);
+				// document.getElementById('xLink').href = buildUrl(results, document.getElementById('autocompleteOrigin').value, document.getElementById('autocompleteDestination').value);
 			}
 
 		}
@@ -182,16 +184,25 @@ $(document).on("pageshow", "#map", function ()
 		});
 
 
-		boolaray[i] = true
+		boolaray[i] = false
 		opened[i] = false
 		google.maps.event.addListener(marker, 'click', function() {
-			if(opened)
+			if(opened[i])
 			{
-				boolaray = !boolaray;
+				boolaray[i] = !boolaray[i];
+				if(boolaray[i]){
+		    	marker.setAnimation(google.maps.Animation.BOUNCE);
+		    }
+
+		    else{
+		    	marker.setAnimation(null);
+		    }
+
 			}
 			else
 			{
-				opened = true
+
+				opened[i] = true
 				infowindow.setContent(place.name);
 				infowindow.open(map, this);
 			}
@@ -258,19 +269,19 @@ function fillInAddressDestination() {
 
 }
 
-
 function buildUrl(places, origin, destination){
 	//Build the url to send back to client
 	var baseUrl = 'https://www.google.com/maps/dir';
 	baseUrl += '/' + startlat + ',' + startlng;
-	for (var i = 0; i < 10; i++) {
-		if(boolaray[i])
-		{
+	for (var i = 0; i < places.length; i++) {
+		if (boolaray[i]){
 			baseUrl += '/' + places[i].name.split(' ').join('+') ;
 			console.log(places[i].name);
 		}
-	};
+	}
 	baseUrl += '/' + destination.split(' ').join('+');
-	return baseUrl;
+	_results = null;
+	window.location.replace(baseUrl);
 }
+
 

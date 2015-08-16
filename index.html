@@ -59,7 +59,7 @@
         <div id="map" data-role="page" data-theme="a">
             <div data-role="content">
                 <div id="map-canvas"></div>
-                <a id='xLink' data-role='button' class='forMap2'>Map me!</a>
+                <a id='xLink' onClick="buildUrl(_results, document.getElementById('autocompleteOrigin').value, document.getElementById('autocompleteDestination').value)" data-role='button' class='forMap2'>Map me!</a>
             </div>
         </div>
         <div id="suggested" data-role="page" data-theme="a">
