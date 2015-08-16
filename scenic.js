@@ -147,6 +147,54 @@ $(document).on("pageshow", "#map", function ()
 		{
 			if(true){
 
+					if( Math.abs(endlat-startlat) > Math.abs(endlng-startlng))
+					{
+						if(startlat<endlat)
+						{
+							_results = results.sort(function(a, b){
+								var keyA = a.geometry.location.lat();
+								var keyB = b.geometry.location.lat();
+						    if(keyA > keyB) return -1;
+								if(keyA < keyB) return 1;
+								return 0;
+							});
+						}
+						else
+						{
+							_results = results.sort(function(a, b){
+								var keyA = a.geometry.location.lat();
+								var keyB = b.geometry.location.lat();
+						    if(keyA < keyB) return -1;
+								if(keyA > keyB) return 1;
+								return 0;
+							});
+						}
+					}
+					else
+					{
+						if(startlng<endlng)
+						{
+							_results = results.sort(function(a, b){
+								var keyA = a.geometry.location.lng();
+								var keyB = b.geometry.location.lng();
+						    if(keyA > keyB) return -1;
+								if(keyA < keyB) return 1;
+								return 0;
+							});
+						}
+						else
+						{
+							_results = results.sort(function(a, b){
+								var keyA = a.geometry.location.lng();
+								var keyB = b.geometry.location.lng();
+						    if(keyA < keyB) return -1;
+								if(keyA > keyB) return 1;
+								return 0;
+							});
+						}
+					}
+		
+					results = _results;
 				for (var i = 0; i < results.length; i++)
 				{
 					createMarker(results[i],i);
@@ -164,7 +212,8 @@ $(document).on("pageshow", "#map", function ()
 
 
 					});
-					_results = results;
+					
+					// _results = results;
 
 						// _results = results.sort(function(a, b){
 						// 		var keyA = a.geometry.location.lat();
@@ -174,53 +223,6 @@ $(document).on("pageshow", "#map", function ()
 						// 		return 0;
 						// 	});
 						
-					// if( Math.abs(endlat-startlat) > Math.abs(endlng-startlng))
-					// {
-					// 	if(startlat<endlat)
-					// 	{
-					// 		_results = results.sort(function(a, b){
-					// 			var keyA = a.geometry.location.lat();
-					// 			var keyB = b.geometry.location.lat();
-					// 	    if(keyA > keyB) return -1;
-					// 			if(keyA < keyB) return 1;
-					// 			return 0;
-					// 		});
-					// 	}
-					// 	else
-					// 	{
-					// 		_results = results.sort(function(a, b){
-					// 			var keyA = a.geometry.location.lat();
-					// 			var keyB = b.geometry.location.lat();
-					// 	    if(keyA < keyB) return -1;
-					// 			if(keyA > keyB) return 1;
-					// 			return 0;
-					// 		});
-					// 	}
-					// }
-					// else
-					// {
-					// 	if(startlng<endlng)
-					// 	{
-					// 		_results = results.sort(function(a, b){
-					// 			var keyA = a.geometry.location.lng();
-					// 			var keyB = b.geometry.location.lng();
-					// 	    if(keyA > keyB) return -1;
-					// 			if(keyA < keyB) return 1;
-					// 			return 0;
-					// 		});
-					// 	}
-					// 	else
-					// 	{
-					// 		_results = results.sort(function(a, b){
-					// 			var keyA = a.geometry.location.lng();
-					// 			var keyB = b.geometry.location.lng();
-					// 	    if(keyA < keyB) return -1;
-					// 			if(keyA > keyB) return 1;
-					// 			return 0;
-					// 		});
-					// 	}
-					// }
-		
 				// console.log(document.getElementById('xLink'));
 
 				// document.getElementById('xLink').href = buildUrl(results, document.getElementById('autocompleteOrigin').value, document.getElementById('autocompleteDestination').value);
